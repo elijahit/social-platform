@@ -1,0 +1,36 @@
+use db_milestone;
+
+# Seleziona gli utenti che hanno postato almeno un video
+select distinct u.*
+from users u 
+join posts p on u.id = p.user_id
+join medias m on u.id = m.user_id
+where m.`type` like "video";
+
+# Seleziona tutti i post senza Like (13)
+
+select p.title as "Titolo", p.id
+from posts p 
+left join likes l on l.post_id = p.id
+where l.post_id  is NULL;
+
+# Conta il numero di like per ogni post (165)
+select p.id, count(l.post_id)
+from posts p 
+left join likes l ON l.post_id = p.id
+group by p.id;
+
+# Ordina gli utenti per il numero di media caricati (25) 
+select count(*) as "Media caricati", u.username 
+from users u 
+join medias m on m.user_id = u.id
+group by u.username
+order by count(*) DESC;
+
+# Ordina gli utenti per totale di likes ricevuti nei loro posts (25) 
+select count(*) as "Like ricevuti", u.username 
+from users u 
+join posts p on p.user_id = u.id
+join likes l on p.id = l.post_id 
+group by u.username
+order by count(*) DESC;
